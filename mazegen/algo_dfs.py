@@ -18,7 +18,6 @@ class DepthFirstSearch(MazeGenerator):
         super().__init__(width, height, entry, exit, perfect, seed)
         random.seed(seed)
 
-
     def generate(self) -> None:
         stack = [self.entry]
         visited = {self.entry}
@@ -121,3 +120,20 @@ class DepthFirstSearch(MazeGenerator):
         path.reverse()
         return path
 
+
+if __name__ == "__main__":
+    try:
+        dfs = DepthFirstSearch(10, 10, (2, 4), (9, 9), perfect=True, seed=42)
+    except ValueError as e:
+        print(e, file=sys.stderr)
+        sys.exit()
+
+    dfs.generate()
+    hexa_maze = dfs.create_hexa_maze()
+    perfect_maze_path = dfs.solver()
+    try:
+        cardinal_path = dfs.find_cardinal_path(perfect_maze_path)
+    except ValueError as e:
+        print(e)
+    else:
+        dfs.print_maze_to_file("file.txt", hexa_maze, cardinal_path)
