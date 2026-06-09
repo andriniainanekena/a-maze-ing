@@ -57,6 +57,9 @@ class ASCIIRenderer:
     def colors(self) -> dict[str, str]:
         return COLOR_SETS[self.color_index]
 
+    def next_color(self) -> None:
+        self.color_index = (self.color_index + 1) % len(COLOR_SETS)
+
     def _c(self, key: str, text: str) -> str:
         return self.colors[key] + text + RESET
 
@@ -99,7 +102,11 @@ class ASCIIRenderer:
             has_east = bool(maze.grid.cells[y][x] & Grid.EAST)
 
             row += self._c(color_key, f" {char} ")
-            row += self._c("wall", "|") if has_east else " "
+
+            if has_east:
+                row += self._c("wall", "|")
+            else:
+                row += " "
 
         print(row)
 
@@ -123,9 +130,18 @@ class ASCIIRenderer:
 
     def _print_bottom_border(self, maze: MazeGenerator) -> None:
         row = self._c("wall", "+")
+        last_y = maze.height - 1
+
         for x in range(maze.width):
-            last_y = maze.height - 1
             has_south = bool(maze.grid.cells[last_y][x] & Grid.SOUTH)
             seg = "---" if has_south else "   "
             row += self._c("wall", seg) + self._c("wall", "+")
+
         print(row)
+
+    def print_menu(self) -> None:
+        print("\n=== A-Maze-ing ===")
+        print("1. Re-generate a new maze")
+        print("2. Show/Hide path from entry to exit")
+        print("3. Rotate maze colors")
+        print("4. Quit")
