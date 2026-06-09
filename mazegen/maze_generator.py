@@ -87,3 +87,45 @@ class MazeGenerator(ABC):
                 cardinal_path.append("S")
 
         return "".join(cardinal_path)
+
+    def get_logo(self) -> list[tuple[int, int]]:
+        width = self.width
+        while width > 9:
+            height = self.height
+            while height > 7:
+                possible_logo = self.create_logo(width, height)
+                if self.is_logo_valid(possible_logo):
+                    return possible_logo
+                height -= 1
+            width -= 1
+        return []
+
+    def is_logo_valid(self, logo: list[tuple[int, int]]) -> bool:
+        return self.entry not in logo and self.exit not in logo
+
+    @staticmethod
+    def create_logo(width: int, height: int) -> list[tuple[int, int]]:
+        x = (width - 1) // 2
+        y = (height - 1) // 2
+
+        logo: list[tuple[int, int]] = [
+            (x - 3, y - 2),
+            (x - 3, y - 1),
+            (x - 3, y),
+            (x - 2, y),
+            (x - 1, y),
+            (x - 1, y + 1),
+            (x - 1, y + 2),
+            (x + 1, y - 2),
+            (x + 2, y - 2),
+            (x + 3, y - 2),
+            (x + 3, y - 1),
+            (x + 3, y),
+            (x + 2, y),
+            (x + 1, y),
+            (x + 1, y + 1),
+            (x + 1, y + 2),
+            (x + 2, y + 2),
+            (x + 3, y + 2),
+        ]
+        return logo
