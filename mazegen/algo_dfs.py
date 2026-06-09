@@ -40,6 +40,26 @@ class DepthFirstSearch(MazeGenerator):
         if not self.perfect:
             self.maze_imperfect()
 
+    def maze_imperfect(self) -> None:
+        lst: list[int] = [1, 2, 3]
+        directions: list[int] = [
+            Grid.NORTH, Grid.SOUTH, Grid.EAST, Grid.WEST
+        ]
+        for y in range(self.height):
+            for x in range(self.width):
+                res = random.choice(lst)
+                if res == 3:
+                    direction = random.choice(directions)
+                    dx, dy = self.grid.DELTA[direction]
+                    nx, ny = x + dx, y + dy
+                    if (
+                        self.grid.is_valid(nx, ny)
+                        and (nx, ny) not in self.logo
+                        and (x, y) not in self.logo
+                    ):
+                        self.grid.remove_wall(x, y, direction)
+                        if self.verif_3x3(x, y):
+                            self.grid.add_wall(x, y, direction)
 
     def get_unvisited_neighbors(
         self,
