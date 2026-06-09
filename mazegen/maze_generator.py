@@ -29,6 +29,31 @@ class MazeGenerator(ABC):
     @abstractmethod
     def solver(self) -> Any: ...
 
+    def verif_3x3(self, nx: int, ny: int) -> bool:
+        for ty in range(-2, 1):
+            for tx in range(-2, 1):
+                x = nx + tx
+                y = ny + ty
+                if (
+                    self.grid.is_valid(x, y)
+                    and self.grid.is_valid(x + 2, y + 2)
+                ):
+                    if self.is_there_hole(x, y):
+                        return True
+        return False
+
+    def is_there_hole(self, nx: int, ny: int) -> bool:
+        for y in range(3):
+            for x in range(2):
+                if self.grid.cells[ny + y][nx + x] & self.grid.EAST:
+                    return False
+
+        for y in range(2):
+            for x in range(3):
+                if self.grid.cells[ny + y][nx + x] & self.grid.SOUTH:
+                    return False
+        return True
+
     def create_hexa_maze(self) -> list[str]:
         hexa_maze: list[str] = []
         hexa = "0123456789ABCDEF"
