@@ -1,7 +1,6 @@
 from mazegen.maze_generator import MazeGenerator
 from mazegen.grid import Grid
 
-
 RESET = "\033[0m"
 
 COLOR_SETS = [
@@ -49,7 +48,9 @@ COLOR_SETS = [
 
 
 class ASCIIRenderer:
-    def __init__(self, display_solution: bool, color_index: int = 0) -> None:
+    def __init__(
+        self, display_solution: bool, color_index: int = 0
+    ) -> None:
         self.display_solution = display_solution
         self.color_index = color_index
 
@@ -77,6 +78,10 @@ class ASCIIRenderer:
 
         self._print_bottom_border(maze)
 
+        print(f"\nSeed: {maze.seed}")
+        if not maze.logo:
+            print("Can't print 42 logo : the maze is too small")
+
     def _print_top_border(self, maze: MazeGenerator, y: int) -> None:
         row = self._c("wall", "+")
         for x in range(maze.width):
@@ -93,21 +98,13 @@ class ASCIIRenderer:
         logo_set: set[tuple[int, int]],
     ) -> None:
         row = self._c("wall", "|")
-
         for x in range(maze.width):
             color_key, char = self._get_cell(
                 maze, x, y, solution_set, logo_set
             )
-
             has_east = bool(maze.grid.cells[y][x] & Grid.EAST)
-
             row += self._c(color_key, f" {char} ")
-
-            if has_east:
-                row += self._c("wall", "|")
-            else:
-                row += " "
-
+            row += self._c("wall", "|") if has_east else "   "[1]
         print(row)
 
     def _get_cell(
@@ -130,13 +127,11 @@ class ASCIIRenderer:
 
     def _print_bottom_border(self, maze: MazeGenerator) -> None:
         row = self._c("wall", "+")
-        last_y = maze.height - 1
-
         for x in range(maze.width):
+            last_y = maze.height - 1
             has_south = bool(maze.grid.cells[last_y][x] & Grid.SOUTH)
             seg = "---" if has_south else "   "
             row += self._c("wall", seg) + self._c("wall", "+")
-
         print(row)
 
     def print_menu(self) -> None:
