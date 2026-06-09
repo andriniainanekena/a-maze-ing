@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Any
 import sys
 
+
 class MazeGenerator(ABC):
     def __init__(
         self,
@@ -21,3 +22,9 @@ class MazeGenerator(ABC):
         self.seed = seed
         self.grid = Grid(width, height)
         self.logo = self.get_logo()
+
+    @abstractmethod
+    def generate(self) -> Any: ...
+
+    @abstractmethod
+    def solver(self) -> Any: ...
