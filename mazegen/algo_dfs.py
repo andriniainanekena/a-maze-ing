@@ -18,3 +18,18 @@ class DepthFirstSearch(MazeGenerator):
         super().__init__(width, height, entry, exit, perfect, seed)
         random.seed(seed)
 
+    def get_unvisited_neighbors(
+        self,
+        cell: tuple[int, int],
+        visited: set[tuple[int, int]],
+    ) -> list[int]:
+        g = self.grid
+        x, y = cell
+        neighbors = []
+
+        for direction in [g.NORTH, g.SOUTH, g.EAST, g.WEST]:
+            dx, dy = g.DELTA[direction]
+            nx, ny = x + dx, y + dy
+            if g.is_valid(nx, ny) and (nx, ny) not in visited:
+                neighbors.append(direction)
+        return neighbors
