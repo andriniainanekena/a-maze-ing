@@ -87,3 +87,17 @@ class DepthFirstSearch(MazeGenerator):
                 if g.is_valid(nx, ny):
                     neighbors.append((nx, ny))
         return neighbors
+
+    def get_path_way(
+        self,
+        parent: dict[tuple[int, int], tuple[int, int] | None],
+    ) -> list[tuple[int, int]]:
+        path = []
+        current: tuple[int, int] | None = self.exit
+
+        while current is not None:
+            path.append(current)
+            current = parent[current]
+        path.reverse()
+        return path
+
