@@ -18,6 +18,29 @@ class DepthFirstSearch(MazeGenerator):
         super().__init__(width, height, entry, exit, perfect, seed)
         random.seed(seed)
 
+
+    def generate(self) -> None:
+        stack = [self.entry]
+        visited = {self.entry}
+        visited.update(self.logo)
+
+        while stack:
+            current_cell = stack[-1]
+            neighbors = self.get_unvisited_neighbors(current_cell, visited)
+            if neighbors:
+                direction = random.choice(neighbors)
+                x, y = current_cell
+                self.grid.remove_wall(x, y, direction)
+                dx, dy = self.grid.DELTA[direction]
+                nx, ny = x + dx, y + dy
+                visited.add((nx, ny))
+                stack.append((nx, ny))
+            else:
+                stack.pop()
+        if not self.perfect:
+            self.maze_imperfect()
+
+
     def get_unvisited_neighbors(
         self,
         cell: tuple[int, int],
