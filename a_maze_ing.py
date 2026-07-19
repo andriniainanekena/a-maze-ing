@@ -1,7 +1,7 @@
 import sys
 from parsing.parsing_file import parse_input_file
-from mazegen.algo_dfs import DepthFirstSearch
 from maze_display.ascii_renderer import ASCIIRenderer
+from maze_build import generate_maze
 
 
 def a_maze_ing(file_name: str) -> int:
@@ -13,40 +13,22 @@ def a_maze_ing(file_name: str) -> int:
         print(e, file=sys.stderr)
         return -1
 
+    if maze_setting.display_mode == "MLX":
+        from maze_display.mlx_renderer import run_mlx
+
+        return run_mlx(file_name, maze_setting)
+
     try:
-        maze = DepthFirstSearch(
-            width=maze_setting.width,
-            height=maze_setting.height,
-            entry=(maze_setting.entry_x, maze_setting.entry_y),
-            exit=(maze_setting.exit_x, maze_setting.exit_y),
-            perfect=maze_setting.is_perfect,
-            seed=maze_setting.seed,
-        )
-        renderer = ASCIIRenderer(
-            display_solution=maze_setting.display_solution,
-        )
+        maze, solution = generate_maze(maze_setting)
     except Exception as e:
         print(e, file=sys.stderr)
         return -1
 
-    maze.generate()
-    hexa_maze = maze.create_hexa_maze()
-
-    perfect_maze_path = maze.solver()
-    try:
-        cardinal_path = maze.find_cardinal_path(perfect_maze_path)
-        maze.print_maze_to_file(
-            maze_setting.output_filename, hexa_maze, cardinal_path
-        )
-    except ValueError as e:
-        print(e, file=sys.stderr)
-        return -1
-
-    solution = maze.solver()
     if not solution:
         print("Couldn't find the maze's solution.", file=sys.stderr)
         return -1
 
+    renderer = ASCIIRenderer(display_solution=maze_setting.display_solution)
     renderer.display_maze(maze, solution)
 
     try:
