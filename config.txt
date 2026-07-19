@@ -1,8 +1,10 @@
-WIDTH=15
-HEIGHT=15
+WIDTH=25
+HEIGHT=25
 ENTRY=0,0
-EXIT=14,14
+EXIT=24,24
 OUTPUT_FILE=output.txt
 PERFECT=True
 SEED=None
 DISPLAY_SOLUTION=True
+# Defaults to ASCII. Set to MLX for the graphical display
+DISPLAY_MODE=MLX
