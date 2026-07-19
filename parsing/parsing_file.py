@@ -23,6 +23,7 @@ def transform_input(
         "SEED",
         "DISPLAY_SOLUTION",
     ]
+    optional_settings = ["DISPLAY_MODE"]
 
     return_value: dict[str, Any] = {}
     for data in file_content:
@@ -36,6 +37,11 @@ def transform_input(
             raise ValueError("File input is invalid : no '=' detected")
 
         key, value = data.split("=", 1)
+
+        if key in optional_settings:
+            return_value[key] = value
+            continue
+
         if not key or key not in settings:
             continue
 
@@ -58,6 +64,8 @@ def transform_input(
         raise ValueError(
             f"Missing settings to create the maze: {', '.join(settings)}"
         )
+
+    return_value.setdefault("DISPLAY_MODE", "ASCII")
 
     if file_name == return_value["OUTPUT_FILE"]:
         raise ValueError("Input and output files can't be the same")
@@ -85,6 +93,7 @@ def parse_input_file(file_name: str) -> ValidFileInput:
             is_perfect=settings["PERFECT"],
             seed=settings["SEED"],
             display_solution=settings["DISPLAY_SOLUTION"],
+            display_mode=settings["DISPLAY_MODE"],
         )
     except ValidationError as e:
         print(e.errors()[0]["msg"], file=sys.stderr)

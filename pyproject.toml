@@ -12,3 +12,7 @@ readme = "README.md"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["mazegen*"]
+
+[[tool.mypy.overrides]]
+module = "mlx.*"
+ignore_missing_imports = true

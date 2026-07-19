@@ -14,6 +14,7 @@ class ValidFileInput(BaseModel):
     is_perfect: bool
     seed: int
     display_solution: bool
+    display_mode: str = "ASCII"
 
     @model_validator(mode="before")
     @classmethod
@@ -54,5 +55,11 @@ class ValidFileInput(BaseModel):
         if self.height < 2:
             raise ValueError(
                 "The maze height is too small to create a maze"
+            )
+
+        self.display_mode = self.display_mode.strip().upper()
+        if self.display_mode not in ("ASCII", "MLX"):
+            raise ValueError(
+                "File input is invalid : DISPLAY_MODE must be ASCII or MLX"
             )
         return self
