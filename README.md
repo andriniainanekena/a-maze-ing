@@ -7,7 +7,7 @@
 <div align="center">
 
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)
-![ASCII](https://img.shields.io/badge/Display-ASCII-bluegrey?style=flat-square)
+![Display](https://img.shields.io/badge/Display-ASCII%20%7C%20MLX-bluegrey?style=flat-square)
 ![Pydantic](https://img.shields.io/badge/Pydantic-Validation-E92063?style=flat-square&logo=pydantic&logoColor=white)
 
 </div>
@@ -17,17 +17,21 @@
   <img src="assets/001.png" width="32%" />
   <img src="assets/002.png" width="32%" />
 </p>
-
-*Why not MLX? Because I'm too lazy to learn it, so why not ASCII instead? XD*
+<p align="center">
+  <img src="assets/003.png" width="32%" />
+  <img src="assets/004.png" width="32%" />
+  <img src="assets/005.png" width="32%" />
+</p>
 
 ## Description
 
-A-Maze-ing is a maze generator and visualizer written in Python. The program reads a configuration file, generates a maze using a randomized Depth-First Search (recursive backtracker) algorithm, writes the result to an output file using a hexadecimal wall encoding, and displays the maze in the terminal using ASCII rendering.
+A-Maze-ing is a maze generator and visualizer written in Python. The program reads a configuration file, generates a maze using a randomized Depth-First Search (recursive backtracker) algorithm, writes the result to an output file using a hexadecimal wall encoding, and displays the maze either in the terminal (ASCII) or in a graphical window (MLX).
 
 The project is split into reusable components:
 - `mazegen` : the core maze generation library
-- `maze_display` : the ASCII rendering module
+- `maze_display` : the ASCII renderer and the optional MLX renderer
 - `parsing` : configuration file parsing and validation
+- `maze_build.py` : shared maze generation/solving/writing logic used by both display modes
 - `a_maze_ing.py` : the main entry point tying everything together
 
 ## Instructions
@@ -77,6 +81,39 @@ make lint-strict
 make clean
 ```
 
+### Graphical display (MLX, Ubuntu/Debian)
+
+By default the maze is displayed with the ASCII renderer. An optional graphical
+display is available using MLX (Linux/X11 build), with a small animation that
+reveals the shortest path step by step.
+
+To enable it, set in your config file:
+
+```
+DISPLAY_MODE=MLX
+```
+
+Install the MLX Python binding (Ubuntu/Debian only) with:
+
+```
+make install-mlx
+```
+
+This installs `mlx-2_2-py3-ubuntu-any.whl`, already provided in the
+repository. 
+
+Controls in the MLX window:
+
+| Key | Action |
+| --- | --- |
+| 1 | Re-generate a new maze |
+| 2 | Show/Hide the solution path (animated reveal) |
+| 3 | Rotate wall/path colours |
+| 4 or Esc | Quit |
+
+If `DISPLAY_MODE` is missing from the config file, it defaults to `ASCII`, so
+existing configuration files keep working unchanged.
+
 ### Build the reusable package
 
 ```
@@ -99,6 +136,7 @@ The configuration file is a plain text file containing one `KEY=VALUE` pair per 
 | PERFECT | Whether the maze has a unique path (True/False) | PERFECT=True |
 | SEED | Seed for reproducibility, or "None" for random | SEED=None |
 | DISPLAY_SOLUTION | Whether to display the solution path | DISPLAY_SOLUTION=True |
+| DISPLAY_MODE | Optional. `ASCII` (default) or `MLX` | DISPLAY_MODE=ASCII |
 
 Example `config.txt`:
 
@@ -111,6 +149,7 @@ OUTPUT_FILE=output.txt
 PERFECT=True
 SEED=None
 DISPLAY_SOLUTION=True
+DISPLAY_MODE=ASCII
 ```
 
 ## Maze generation algorithm
@@ -172,4 +211,4 @@ hexa_maze = maze.create_hexa_maze()
 - [ANSI escape codes reference](https://en.wikipedia.org/wiki/ANSI_escape_code)
 - [Pydantic documentation](https://docs.pydantic.dev/)
 - [Python typing module documentation](https://docs.python.org/3/library/typing.html)
-
+- [MinilibX (MLX) reference header](docs/mlx.h)
